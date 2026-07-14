@@ -15,7 +15,7 @@ from reporter import Reporter
 
 def print_banner():
     print("=" * 60)
-    print("📊 Code Analyzer - 本地代码分析器")
+    print("Code Analyzer - 本地代码分析器")
     print("=" * 60)
     print("支持：项目分析 / 单文件解析 / JSON 导出")
     print()

@@ -12,10 +12,10 @@ from reporter import Reporter
 
 # 测试：解析单个文件
 print("=" * 60)
-print("测试：解析 main.py")
+print("测试：解析 utils.py")
 print("=" * 60)
 
-file_path = r"E:\test_guiji - LH\main.py"
+file_path = r"E:\code_analyzer\utils.py"
 parser = FileParser(file_path)
 result = parser.parse()
 Reporter.print_file_report(result)
@@ -23,10 +23,10 @@ Reporter.print_file_report(result)
 # 测试：分析项目
 print("\n")
 print("=" * 60)
-print("测试：分析 test_guiji 项目")
+print("测试：分析 code_analyzer 项目")
 print("=" * 60)
 
-project_path = r"E:\test_guiji - LH"
+project_path = r"E:\code_analyzer"
 analyzer = ProjectAnalyzer(project_path)
 project_result = analyzer.analyze()
 Reporter.print_project_report(project_result)

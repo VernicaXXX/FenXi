@@ -75,7 +75,8 @@ class ProjectAnalyzer:
                     continue
                 
                 total_files += 1
-# 获取文件信息
+                
+                # 获取文件信息
                 try:
                     size_bytes = os.path.getsize(file_path)
                     total_size += size_bytes
