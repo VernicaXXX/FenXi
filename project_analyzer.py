@@ -36,6 +36,7 @@ class FileInfo:
     size_bytes: int
     code_lines: int
     modified_time: str
+    modified_timestamp: float = 0  # 用于排序
 
 
 @dataclass
@@ -88,24 +89,26 @@ class ProjectAnalyzer:
         for r in results:
             lang_stats[r['language']] += 1
             lang_lines[r['language']] += r['code_lines']
-            file_infos.append(FileInfo(r['path'], r['name'], r['language'], r['size_bytes'], r['code_lines'], r['modified_time']))
+            file_infos.append(FileInfo(r['path'], r['name'], r['language'], r['size_bytes'], r['code_lines'], r['modified_time'], r['modified_timestamp']))
 
         return ProjectAnalysisResult(
             self.root_path, total_files, total_dirs, total_size,
             total_code, total_comment, total_blank,
             dict(lang_stats), dict(lang_lines), file_infos,
             heapq.nlargest(10, file_infos, key=lambda f: f.code_lines),
-            heapq.nlargest(10, file_infos, key=lambda f: f.modified_time)
+            heapq.nlargest(10, file_infos, key=lambda f: f.modified_timestamp)
         )
 
     def _process_file(self, fp: str) -> Optional[dict]:
         try:
+            mtime = os.path.getmtime(fp)
             return {
                 'path': fp, 'name': os.path.basename(fp),
                 'language': get_language(fp),
                 'size_bytes': os.path.getsize(fp),
                 'code_lines': count_lines(fp)[0], 'comment_lines': count_lines(fp)[1], 'blank_lines': count_lines(fp)[2],
-                'modified_time': datetime.fromtimestamp(os.path.getmtime(fp)).strftime('%Y-%m-%d %H:%M')
+                'modified_time': datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M'),
+                'modified_timestamp': mtime
             }
         except: return None
 

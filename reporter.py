@@ -118,8 +118,14 @@ class Reporter:
         print("=" * 60)
     
     @staticmethod
-    def export_json(data, output_path: str) -> str:
-        """导出为 JSON 文件"""
+    def export_json(data, output_path: str = None) -> str:
+        """导出为 JSON 文件（默认带时间戳，防止覆盖）"""
+        from datetime import datetime
+        
+        if output_path is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_path = f"analysis_report_{timestamp}.json"
+        
         def dataclass_to_dict(obj):
             if hasattr(obj, '__dataclass_fields__'):
                 return {k: v for k, v in vars(obj).items()}
@@ -134,4 +140,5 @@ class Reporter:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
         
+        print(f"[导出成功] {output_path}")
         return output_path

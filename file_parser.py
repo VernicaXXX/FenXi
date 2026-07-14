@@ -88,6 +88,12 @@ class FileParser:
             functions, classes, imports = self._parse_python()
         elif ext in ('.js', '.ts'):
             functions, classes, imports = self._parse_javascript()
+        elif ext == '.java':
+            functions, classes, imports = self._parse_java()
+        elif ext == '.go':
+            functions, classes, imports = self._parse_go()
+        elif ext == '.rs':
+            functions, classes, imports = self._parse_rust()
         
         return functions, classes, imports
     
@@ -185,5 +191,74 @@ class FileParser:
                 name=match.group(1),
                 line_number=content[:match.start()].count('\n') + 1
             ))
+        
+        return functions, classes, imports
+    
+    def _parse_java(self) -> tuple:
+        """解析 Java 文件"""
+        functions, classes, imports = [], [], []
+        try:
+            with open(self.file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+        except:
+            return functions, classes, imports
+        
+        # import
+        for m in re.finditer(r'import\s+[\w.]+;', content):
+            imports.append(m.group(0))
+        
+        # class
+        for m in re.finditer(r'class\s+(\w+)', content):
+            classes.append(ClassInfo(name=m.group(1), line_number=content[:m.start()].count('\n')+1))
+        
+        # method
+        for m in re.finditer(r'(?:public|private|protected)?\s*(?:static)?\s*\w+\s+(\w+)\s*\(', content):
+            functions.append(FunctionInfo(name=m.group(1), line_number=content[:m.start()].count('\n')+1))
+        
+        return functions, classes, imports
+    
+    def _parse_go(self) -> tuple:
+        """解析 Go 文件"""
+        functions, classes, imports = [], [], []
+        try:
+            with open(self.file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+        except:
+            return functions, classes, imports
+        
+        # import
+        for m in re.finditer(r'import\s+[\'"][^\'"]+[\'"]|import\s*\([^)]+\)', content):
+            imports.append(m.group(0))
+        
+        # struct (as class)
+        for m in re.finditer(r'type\s+(\w+)\s+struct', content):
+            classes.append(ClassInfo(name=m.group(1), line_number=content[:m.start()].count('\n')+1))
+        
+        # func
+        for m in re.finditer(r'func\s+(?:\([^)]+\)\s*)?(\w+)\s*\(', content):
+            functions.append(FunctionInfo(name=m.group(1), line_number=content[:m.start()].count('\n')+1))
+        
+        return functions, classes, imports
+    
+    def _parse_rust(self) -> tuple:
+        """解析 Rust 文件"""
+        functions, classes, imports = [], [], []
+        try:
+            with open(self.file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+        except:
+            return functions, classes, imports
+        
+        # use
+        for m in re.finditer(r'use\s+[\w:]+;', content):
+            imports.append(m.group(0))
+        
+        # struct/enum (as class)
+        for m in re.finditer(r'(?:struct|enum)\s+(\w+)', content):
+            classes.append(ClassInfo(name=m.group(1), line_number=content[:m.start()].count('\n')+1))
+        
+        # fn
+        for m in re.finditer(r'fn\s+(\w+)', content):
+            functions.append(FunctionInfo(name=m.group(1), line_number=content[:m.start()].count('\n')+1))
         
         return functions, classes, imports

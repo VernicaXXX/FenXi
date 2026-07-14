@@ -1,5 +1,6 @@
 {
   "github_repo": "https://github.com/VernicaXXX/FenXi.git",
   "default_branch": "master",
-  "data_dir": "data"
+  "data_dir": "agentic_coding_trace",
+  "docker_env_dir": "docker_env"
 }

@@ -36,6 +36,20 @@ LANGUAGE_MAP = {
     '.bat': 'Batch',
     '.md': 'Markdown',
     '.txt': 'Text',
+    '.java': 'Java',
+    '.go': 'Go',
+    '.rs': 'Rust',
+    '.cpp': 'C++',
+    '.c': 'C',
+    '.h': 'C/C++ Header',
+    '.hpp': 'C++ Header',
+    '.cs': 'C#',
+    '.php': 'PHP',
+    '.rb': 'Ruby',
+    '.swift': 'Swift',
+    '.kt': 'Kotlin',
+    '.scala': 'Scala',
+    '.ts': 'TypeScript',
 }
 
 # 跳过的目录
